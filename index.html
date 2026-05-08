@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Crypto Tracker" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#111827" />
+  <title>Crypto Investment Tracker</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #f4f6f8;
+      color: #111827;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 24px 16px 18px;
+      padding-top: calc(24px + env(safe-area-inset-top));
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    header p {
+      margin: 8px auto 0;
+      color: #d1d5db;
+      font-size: 14px;
+      max-width: 700px;
+      line-height: 1.4;
+    }
+
+    .container {
+      width: min(1100px, 94%);
+      margin: 16px auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      margin-bottom: 16px;
+    }
+
+    h2, h3 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+    }
+
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-top: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .success {
+      background: #16a34a;
+    }
+
+    .success:hover {
+      background: #15803d;
+    }
+
+    .warning {
+      background: #f59e0b;
+    }
+
+    .warning:hover {
+      background: #d97706;
+    }
+
+    .danger {
+      background: #dc2626;
+    }
+
+    .danger:hover {
+      background: #b91c1c;
+    }
+
+    .secondary {
+      background: #4b5563;
+    }
+
+    .secondary:hover {
+      background: #374151;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .button-row button {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .slot-list button {
+      display: block;
+      width: 100%;
+      background: #eef2ff;
+      color: #1e3a8a;
+      text-align: left;
+      margin: 0 0 8px;
+    }
+
+    .slot-list button.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .message {
+      display: none;
+      background: #fef3c7;
+      border-left: 5px solid #f59e0b;
+      padding: 12px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      line-height: 1.4;
+    }
+
+    .install-note {
+      background: #ecfeff;
+      border: 1px solid #67e8f9;
+      color: #155e75;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-box {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 5px;
+    }
+
+    .stat-box span {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .small-text {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .footer-space {
+      height: 30px;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+
+      header p {
+        font-size: 13px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .button-row {
+        display: block;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Crypto Investment Tracker</h1>
+    <p>Target strategy: sell at 20% profit. Educational tool only, not financial advice.</p>
+  </header>
+
+  <main class="container">
+    <div class="card install-note">
+      <strong>iPhone setup:</strong> Save this file somewhere you can open it in Safari, then tap <strong>Share → Add to Home Screen</strong>.
+      Your data saves inside this browser using local storage.
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <div class="grid">
+      <section>
+        <div class="card">
+          <h2>Coin Slots</h2>
+
+          <label for="coinNameInput">Create New Slot</label>
+          <input id="coinNameInput" type="text" placeholder="Example: BTC, ETH, XRP" />
+          <button onclick="createSlot()">Create Slot</button>
+
+          <hr />
+
+          <div id="slotList" class="slot-list"></div>
+        </div>
+
+        <div id="manageSlotCard" class="card hidden">
+          <h3 id="manageSlotTitle">Manage Slot</h3>
+
+          <label for="renameInput">Rename Slot</label>
+          <input id="renameInput" type="text" placeholder="New coin name/symbol" />
+          <button class="warning" onclick="renameSelectedSlot()">Rename Slot</button>
+
+          <div class="button-row">
+            <button class="warning" onclick="clearSelectedSlot()">Clear Trades</button>
+            <button class="danger" onclick="deleteSelectedSlot()">Delete Slot</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Data Tools</h3>
+          <div class="button-row">
+            <button class="secondary" onclick="exportData()">Export Data</button>
+            <button class="secondary" onclick="document.getElementById('importFile').click()">Import Data</button>
+          </div>
+          <input id="importFile" class="hidden" type="file" accept="application/json" onchange="importData(event)" />
+          <p class="small-text">Export a backup before clearing browser data or changing phones.</p>
+        </div>
+      </section>
+
+      <section>
+        <div id="startCard" class="card">
+          <h2>Start Here</h2>
+          <p>Create a coin slot first, then select it to add trades and view analysis.</p>
+          <p>Example slots: BTC, ETH, XRP, DOGE, SOL.</p>
+        </div>
+
+        <div id="tradeCard" class="card hidden">
+          <h2 id="tradeCardTitle">Add Trade</h2>
+
+          <label for="buyPriceInput">Buying Price Per Coin ($)</label>
+          <input id="buyPriceInput" type="number" step="0.0001" min="0.0001" placeholder="Example: 10.20" />
+
+          <label for="amountInvestedInput">Amount Invested ($)</label>
+          <input id="amountInvestedInput" type="number" step="0.01" min="0.01" placeholder="Example: 100" />
+
+          <label for="actualSellPriceInput">Actual Selling Price Per Coin ($) - optional</label>
+          <input id="actualSellPriceInput" type="number" step="0.0001" min="0.0001" placeholder="Leave blank if not sold yet" />
+
+          <div class="button-row">
+            <button class="success" onclick="addTrade()">Add Trade</button>
+            <button class="secondary" onclick="clearTradeInputs()">Clear Inputs</button>
+          </div>
+        </div>
+
+        <div id="analysisCard" class="card hidden">
+          <h2 id="analysisTitle">Data Analysis</h2>
+          <div id="analysisStats" class="stats"></div>
+          <div id="recoverySection"></div>
+        </div>
+
+        <div id="tradeHistoryCard" class="card hidden">
+          <h2 id="historyTitle">Trade History</h2>
+          <div id="tradeHistory"></div>
+        </div>
+
+        <div class="card">
+          <h2>All Slots Summary</h2>
+          <div id="allSlotsSummary"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer-space"></div>
+  </main>
+
+  <script>
+    const TARGET_PROFIT_RATE = 0.20;
+    const STORAGE_KEY = "cryptoInvestmentTrackerDataV1";
+
+    let tracker = loadData();
+    let selectedSlotName = tracker.selectedSlotName || null;
+
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        return { slots: {}, selectedSlotName: null };
+      }
+
+      try {
+        const parsed = JSON.parse(saved);
+        if (!parsed.slots) {
+          return { slots: {}, selectedSlotName: null };
+        }
+        return parsed;
+      } catch (error) {
+        return { slots: {}, selectedSlotName: null };
+      }
+    }
+
+    function saveData() {
+      tracker.selectedSlotName = selectedSlotName;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tracker));
+    }
+
+    function showMessage(text) {
+      const messageBox = document.getElementById("message");
+      messageBox.textContent = text;
+      messageBox.style.display = "block";
+      setTimeout(() => {
+        messageBox.style.display = "none";
+      }, 3500);
+    }
+
+    function normalizeCoinName(name) {
+      return name.trim().toUpperCase();
+    }
+
+    function money(value) {
+      return `$${Number(value || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
+    }
+
+    function money4(value) {
+      return `$${Number(value || 0).toLocaleString(undefined, {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
+      })}`;
+    }
+
+    function percent(value) {
+      return `${Number(value || 0).toFixed(2)}%`;
+    }
+
+    function createEmptySlot(coinName) {
+      return {
+        coinName,
+        trades: []
+      };
+    }
+
+    function buildTrade(buyPrice, amountInvested, actualSellPrice = null) {
+      const coinsBought = amountInvested / buyPrice;
+      const targetSellPrice = buyPrice * (1 + TARGET_PROFIT_RATE);
+      const idealSaleValue = amountInvested * (1 + TARGET_PROFIT_RATE);
+      const targetProfitAmount = amountInvested * TARGET_PROFIT_RATE;
+
+      const trade = {
+        buyPrice,
+        amountInvested,
+        coinsBought,
+        targetSellPrice,
+        idealSaleValue,
+        targetProfitAmount,
+        actualSellPrice,
+        actualSaleValue: null,
+        actualProfit: null,
+        actualProfitPercent: null,
+        missedProfit: null
+      };
+
+      if (actualSellPrice !== null) {
+        trade.actualSaleValue = coinsBought * actualSellPrice;
+        trade.actualProfit = trade.actualSaleValue - amountInvested;
+        trade.actualProfitPercent = (trade.actualProfit / amountInvested) * 100;
+        trade.missedProfit = Math.max(targetProfitAmount - trade.actualProfit, 0);
+      }
+
+      return trade;
+    }
+
+    function getSelectedSlot() {
+      if (!selectedSlotName) return null;
+      return tracker.slots[selectedSlotName] || null;
+    }
+
+    function createSlot() {
+      const input = document.getElementById("coinNameInput");
+      const coinName = normalizeCoinName(input.value);
+
+      if (!coinName) {
+        showMessage("Coin name cannot be empty.");
+        return;
+      }
+
+      if (tracker.slots[coinName]) {
+        showMessage(`A slot for ${coinName} already exists.`);
+        return;
+      }
+
+      tracker.slots[coinName] = createEmptySlot(coinName);
+      selectedSlotName = coinName;
+      input.value = "";
+      saveData();
+      render();
+      showMessage(`Slot created for ${coinName}.`);
+    }
+
+    function renameSelectedSlot() {
+      const slot = getSelectedSlot();
+      if (!slot) return;
+
+      const input = document.getElementById("renameInput");
+      const newName = normalizeCoinName(input.value);
+
+      if (!newName) {
+        showMessage("New slot name cannot be empty.");
+        return;
+      }
+
+      if (tracker.slots[newName]) {
+        showMessage("A slot with that name already exists.");
+        return;
+      }
+
+      delete tracker.slots[selectedSlotName];
+      slot.coinName = newName;
+      tracker.slots[newName] = slot;
+      selectedSlotName = newName;
+      input.value = "";
+      saveData();
+      render();
+      showMessage(`Slot renamed to ${newName}.`);
+    }
+
+    function clearSelectedSlot() {
+      const slot = getSelectedSlot();
+      if (!slot) return;
+
+      if (!confirm(`Clear all trades inside ${slot.coinName}?`)) return;
+
+      slot.trades = [];
+      saveData();
+      render();
+      showMessage(`All trades cleared from ${slot.coinName}.`);
+    }
+
+    function deleteSelectedSlot() {
+      const slot = getSelectedSlot();
+      if (!slot) return;
+
+      if (!confirm(`Delete the full ${slot.coinName} slot?`)) return;
+
+      delete tracker.slots[selectedSlotName];
+      const remainingSlots = Object.keys(tracker.slots).sort();
+      selectedSlotName = remainingSlots.length > 0 ? remainingSlots[0] : null;
+      saveData();
+      render();
+      showMessage("Slot deleted.");
+    }
+
+    function addTrade() {
+      const slot = getSelectedSlot();
+      if (!slot) {
+        showMessage("Create and select a slot first.");
+        return;
+      }
+
+      const buyPrice = Number(document.getElementById("buyPriceInput").value);
+      const amountInvested = Number(document.getElementById("amountInvestedInput").value);
+      const sellPriceText = document.getElementById("actualSellPriceInput").value.trim();
+
+      if (!buyPrice || buyPrice <= 0 || !amountInvested || amountInvested <= 0) {
+        showMessage("Please enter valid positive numbers for buy price and amount invested.");
+        return;
+      }
+
+      let actualSellPrice = null;
+      if (sellPriceText !== "") {
+        actualSellPrice = Number(sellPriceText);
+        if (!actualSellPrice || actualSellPrice <= 0) {
+          showMessage("Please enter a valid positive selling price or leave it blank.");
+          return;
+        }
+      }
+
+      const trade = buildTrade(buyPrice, amountInvested, actualSellPrice);
+      slot.trades.push(trade);
+      clearTradeInputs();
+      saveData();
+      render();
+      showMessage(`Trade added to ${slot.coinName}.`);
+    }
+
+    function clearTradeInputs() {
+      document.getElementById("buyPriceInput").value = "";
+      document.getElementById("amountInvestedInput").value = "";
+      document.getElementById("actualSellPriceInput").value = "";
+    }
+
+    function deleteTrade(index) {
+      const slot = getSelectedSlot();
+      if (!slot) return;
+
+      if (!confirm(`Delete trade #${index + 1}?`)) return;
+
+      slot.trades.splice(index, 1);
+      saveData();
+      render();
+      showMessage("Trade deleted.");
+    }
+
+    function totalInvested(slot) {
+      return slot.trades.reduce((sum, trade) => sum + trade.amountInvested, 0);
+    }
+
+    function totalTargetProfit(slot) {
+      return slot.trades.reduce((sum, trade) => sum + trade.targetProfitAmount, 0);
+    }
+
+    function totalActualProfit(slot) {
+      return slot.trades.reduce((sum, trade) => {
+        return sum + (trade.actualProfit !== null ? trade.actualProfit : 0);
+      }, 0);
+    }
+
+    function totalMissedProfit(slot) {
+      return slot.trades.reduce((sum, trade) => {
+        return sum + (trade.missedProfit !== null ? trade.missedProfit : 0);
+      }, 0);
+    }
+
+    function soldTradeCount(slot) {
+      return slot.trades.filter(trade => trade.actualProfit !== null).length;
+    }
+
+    function openTradeCount(slot) {
+      return slot.trades.filter(trade => trade.actualProfit === null).length;
+    }
+
+    function overallProfitPercent(slot) {
+      const soldTrades = slot.trades.filter(trade => trade.actualProfit !== null);
+      const investedInSoldTrades = soldTrades.reduce((sum, trade) => sum + trade.amountInvested, 0);
+
+      if (investedInSoldTrades === 0) return 0;
+      return (totalActualProfit(slot) / investedInSoldTrades) * 100;
+    }
+
+    function requiredFutureProfitToRecover(slot) {
+      const soldTrades = slot.trades.filter(trade => trade.actualProfit !== null);
+      if (soldTrades.length === 0) return 0;
+
+      const requiredProfit = soldTrades.reduce((sum, trade) => {
+        return sum + (trade.amountInvested * TARGET_PROFIT_RATE);
+      }, 0);
+
+      return Math.max(requiredProfit - totalActualProfit(slot), 0);
+    }
+
+    function calculateFutureInvestmentNeeded(slot) {
+      const recoveryNeeded = requiredFutureProfitToRecover(slot);
+
+      if (soldTradeCount(slot) === 0 || recoveryNeeded <= 0) {
+        showMessage("No recovery investment is needed right now.");
+        return;
+      }
+
+      const input = prompt("Enter expected future profit percentage, example 20:");
+      if (input === null) return;
+
+      const expectedRate = Number(input);
+      if (!expectedRate || expectedRate <= 0) {
+        showMessage("Please enter a valid positive percentage.");
+        return;
+      }
+
+      const futureNeeded = recoveryNeeded / (expectedRate / 100);
+      alert(`To make up ${money(recoveryNeeded)} at ${expectedRate.toFixed(2)}%, you would need to invest about ${money(futureNeeded)}.`);
+    }
+
+    function exportData() {
+      const data = JSON.stringify(tracker, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "crypto_tracker_backup.json";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!imported.slots) {
+            showMessage("Invalid backup file.");
+            return;
+          }
+
+          if (!confirm("Importing will replace your current tracker data. Continue?")) return;
+
+          tracker = imported;
+          selectedSlotName = imported.selectedSlotName || Object.keys(imported.slots)[0] || null;
+          saveData();
+          render();
+          showMessage("Data imported successfully.");
+        } catch (error) {
+          showMessage("Could not import file. Make sure it is a valid JSON backup.");
+        }
+      };
+
+      reader.readAsText(file);
+      event.target.value = "";
+    }
+
+    function selectSlot(slotName) {
+      selectedSlotName = slotName;
+      saveData();
+      render();
+    }
+
+    function renderSlotList() {
+      const slotList = document.getElementById("slotList");
+      const slotNames = Object.keys(tracker.slots).sort();
+
+      if (slotNames.length === 0) {
+        slotList.innerHTML = `<p class="small-text">No slots yet. Create one first.</p>`;
+        return;
+      }
+
+      slotList.innerHTML = slotNames.map(name => {
+        const activeClass = name === selectedSlotName ? "active" : "";
+        return `<button class="${activeClass}" onclick="selectSlot('${name}')">${name}</button>`;
+      }).join("");
+    }
+
+    function renderSelectedSlotSections() {
+      const slot = getSelectedSlot();
+
+      document.getElementById("startCard").classList.toggle("hidden", !!slot);
+      document.getElementById("tradeCard").classList.toggle("hidden", !slot);
+      document.getElementById("analysisCard").classList.toggle("hidden", !slot);
+      document.getElementById("tradeHistoryCard").classList.toggle("hidden", !slot);
+      document.getElementById("manageSlotCard").classList.toggle("hidden", !slot);
+
+      if (!slot) return;
+
+      document.getElementById("manageSlotTitle").textContent = `Manage ${slot.coinName}`;
+      document.getElementById("tradeCardTitle").textContent = `Add Trade to ${slot.coinName}`;
+      document.getElementById("analysisTitle").textContent = `Data Analysis for ${slot.coinName}`;
+      document.getElementById("historyTitle").textContent = `Trade History for ${slot.coinName}`;
+
+      renderAnalysis(slot);
+      renderTradeHistory(slot);
+    }
+
+    function renderAnalysis(slot) {
+      const analysisStats = document.getElementById("analysisStats");
+      const recoveryNeeded = requiredFutureProfitToRecover(slot);
+
+      analysisStats.innerHTML = `
+        <div class="stat-box"><strong>Total Trades</strong><span>${slot.trades.length}</span></div>
+        <div class="stat-box"><strong>Sold Trades</strong><span>${soldTradeCount(slot)}</span></div>
+        <div class="stat-box"><strong>Open Trades</strong><span>${openTradeCount(slot)}</span></div>
+        <div class="stat-box"><strong>Total Invested</strong><span>${money(totalInvested(slot))}</span></div>
+        <div class="stat-box"><strong>20% Target Profit</strong><span>${money(totalTargetProfit(slot))}</span></div>
+        <div class="stat-box"><strong>Actual Profit/Loss</strong><span>${money(totalActualProfit(slot))}</span></div>
+        <div class="stat-box"><strong>Profit % on Sold Trades</strong><span>${percent(overallProfitPercent(slot))}</span></div>
+        <div class="stat-box"><strong>Missed Profit</strong><span>${money(totalMissedProfit(slot))}</span></div>
+      `;
+
+      let recoveryText = "";
+      if (soldTradeCount(slot) === 0) {
+        recoveryText = "No sold trades yet.";
+      } else if (recoveryNeeded <= 0) {
+        recoveryText = "This slot is meeting or exceeding the 20% goal.";
+      } else {
+        recoveryText = `${money(recoveryNeeded)} still needed to reach the 20% goal.`;
+      }
+
+      document.getElementById("recoverySection").innerHTML = `
+        <p><strong>Recovery Needed:</strong> ${recoveryText}</p>
+        <button onclick="calculateFutureInvestmentNeeded(getSelectedSlot())">Calculate Recovery Investment</button>
+      `;
+    }
+
+    function renderTradeHistory(slot) {
+      const tradeHistory = document.getElementById("tradeHistory");
+
+      if (slot.trades.length === 0) {
+        tradeHistory.innerHTML = `<p class="small-text">No trades inside this slot yet.</p>`;
+        return;
+      }
+
+      const rows = slot.trades.map((trade, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${money4(trade.buyPrice)}</td>
+          <td>${money(trade.amountInvested)}</td>
+          <td>${trade.coinsBought.toFixed(8)}</td>
+          <td>${money4(trade.targetSellPrice)}</td>
+          <td>${money(trade.idealSaleValue)}</td>
+          <td>${trade.actualSellPrice !== null ? money4(trade.actualSellPrice) : "Open"}</td>
+          <td>${trade.actualProfitPercent !== null ? percent(trade.actualProfitPercent) : "N/A"}</td>
+          <td>${money(trade.missedProfit || 0)}</td>
+          <td><button class="danger" onclick="deleteTrade(${index})">Delete</button></td>
+        </tr>
+      `).join("");
+
+      tradeHistory.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Buy Price</th>
+                <th>Invested</th>
+                <th>Coins</th>
+                <th>20% Target</th>
+                <th>Ideal Sale</th>
+                <th>Actual Sell</th>
+                <th>Profit %</th>
+                <th>Missed Profit</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderAllSlotsSummary() {
+      const summary = document.getElementById("allSlotsSummary");
+      const slotNames = Object.keys(tracker.slots).sort();
+
+      if (slotNames.length === 0) {
+        summary.innerHTML = `<p class="small-text">No slots to summarize yet.</p>`;
+        return;
+      }
+
+      const rows = slotNames.map(name => {
+        const slot = tracker.slots[name];
+        return `
+          <tr>
+            <td>${name}</td>
+            <td>${slot.trades.length}</td>
+            <td>${soldTradeCount(slot)}</td>
+            <td>${openTradeCount(slot)}</td>
+            <td>${money(totalInvested(slot))}</td>
+            <td>${money(totalActualProfit(slot))}</td>
+            <td>${percent(overallProfitPercent(slot))}</td>
+            <td>${money(totalMissedProfit(slot))}</td>
+          </tr>
+        `;
+      }).join("");
+
+      summary.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Coin</th>
+                <th>Trades</th>
+                <th>Sold</th>
+                <th>Open</th>
+                <th>Total Invested</th>
+                <th>Actual Profit/Loss</th>
+                <th>Profit %</th>
+                <th>Missed Profit</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function render() {
+      const slotNames = Object.keys(tracker.slots).sort();
+      if (selectedSlotName && !tracker.slots[selectedSlotName]) {
+        selectedSlotName = slotNames.length > 0 ? slotNames[0] : null;
+      }
+
+      if (!selectedSlotName && slotNames.length > 0) {
+        selectedSlotName = slotNames[0];
+      }
+
+      renderSlotList();
+      renderSelectedSlotSections();
+      renderAllSlotsSummary();
+    }
+
+    render();
+  </script>
+</body>
+</html>
+
